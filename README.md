@@ -56,3 +56,29 @@ http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
     proxy.ServeHTTP(w, r)
 })
 ```
+
+## Hello API
+
+I added an 'api' directory which will be a package and a
+'hello.go' file in it with a function to return JSON:
+
+```go
+package api
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	fmt.Fprintf(w, "{\"message\":\"Hello, world!\"}")
+}
+```
+
+And we can add a handler for the `/api/hello` route and the existing handler
+serving "/" will handle anything else.
+
+```go
+http.HandleFunc("/api/hello", api.Hello)
+```

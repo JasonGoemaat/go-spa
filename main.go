@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+
+	"github.com/JasonGoemaat/go-spa/api"
 )
 
 func main() {
@@ -21,6 +23,13 @@ func main() {
 		proxy.ServeHTTP(w, r)
 	})
 
+	// add our api call, anything not handled elsewhere is handled
+	// by the "/" above
+	http.HandleFunc("/api/hello", api.Hello)
+
 	fmt.Println("Listening on localhost port 7000, proxying to localhost:5173")
-	http.ListenAndServe("localhost:7000", nil)
+	err := http.ListenAndServe("localhost:7000", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
