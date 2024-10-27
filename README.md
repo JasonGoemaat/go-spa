@@ -1,5 +1,39 @@
 # go-spa
 
+**Quickstart**
+
+Change to the 'frontend' directory and run:
+
+    npm install
+    npm run build
+
+Change back to the root directory and run the go app:
+
+    go run .
+
+Now open a browser and go to http://localhost:7000
+
+**Dev Mode**
+
+Change the string on this line in `main.go` to be 'dev':
+
+```go
+var frontend_mode = "dev" // options 'static', 'dev', 'embed' (default)
+```
+
+In one terminal window, go to the 'frontend' directory and run:
+
+    npm install
+    npm run dev
+
+This serves the svelte app in dev mode on port 5173.   Now in another terminal
+go to the root folder and run the go app:
+
+    go run .
+
+
+# Commits
+
 ## Initial Commit 
 
 Created repo on github with MIT license and go `.gitignore` specified.
@@ -207,3 +241,8 @@ interface, which is only `Open(name string) File, error`.
 for errors and return a different file.
 
 We should probably do something similar with the static server.
+
+## Quickstart
+
+Just added information to the top of this readme on cloning
+and running this.
