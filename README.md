@@ -152,4 +152,58 @@ That's what the `+layout.js` file means too I think, that runs for every
 page and returns that it should be prerendered with ssr disabled.  I guess
 this could go in any specific route as well, kinda cool.
 
+## Embedding frontend
 
+We can use the `embed` package to embed the spa files into our app.  I added
+the file `embedHandler.go` to contain the code.   Note the `//go.embed`
+comment actually works a directive that tells the compiler what files to
+embed in the executable.   The other functions are to convert paths, otherwise
+we would need to go to 'http://localhost:7000/frontend/build' to see the
+root page of our spa.  I also check for an error opening an embedded file
+(which happens if it isn't found) and return the root `index.html` instead
+so we can go directly to sub-routes from typing in the address.
+
+```go
+package main
+
+import (
+	"embed"
+	"io/fs"
+	"path"
+)
+
+//go:embed frontend/build/*
+var frontendEmbedded embed.FS
+
+type subdirFS struct {
+	embed.FS
+	subdir string
+}
+
+func (s subdirFS) Open(name string) (fs.File, error) {
+	file, err := s.FS.Open(path.Join(s.subdir, name))
+	if err == nil {
+		return file, nil
+	}
+	file, err = s.FS.Open(path.Join(s.subdir, "index.html"))
+	return file, err
+}
+
+var frontendFs = subdirFS{frontendEmbedded, "frontend/build"}
+```
+
+And serving in `main.go`:
+
+```go
+http.Handle("/", http.FileServer(http.FS(frontendFs)))
+```
+
+This shows the power and flexibility of GO's interface system.
+`http.FileServer` requires an FS object, those have a lot
+of methods.   The `http.FS()` method takes an object
+that implements the [http.FileSystem](https://pkg.go.dev/net/http#FileSystem)
+interface, which is only `Open(name string) File, error`.
+`embed.FS` lets us access embedded files easily and we can check
+for errors and return a different file.
+
+We should probably do something similar with the static server.
