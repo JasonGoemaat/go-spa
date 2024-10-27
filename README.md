@@ -38,3 +38,21 @@ So I change to the directory and check it out:
     npm run dev
 
 And content is served on `http://localhost:5173/`
+
+## Reverse proxy
+
+Goal is to add a handler to reverse proxy the svelte app
+to our go app running on port 7000.
+
+Well, that was pretty easy...  Go includes a reverse proxy
+in it's standard library using a handler func like
+everything else.
+
+```go
+remote, _ := url.Parse("http://localhost:5173")
+proxy := httputil.NewSingleHostReverseProxy(remote)
+http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    r.Host = remote.Host
+    proxy.ServeHTTP(w, r)
+})
+```
