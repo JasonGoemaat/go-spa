@@ -17,4 +17,24 @@ Wrote `main.go` file to print 'Hello, World!' to console.
 Listen on localhost port 7000 and serve 'Hello, World!'
 to requests.
 
+## Svelte app
 
+Created a svelte app in the `frontend` directory.
+
+    npx sv create frontend
+
+Selected `SvelteKit minimal`
+
+Selected `Yes, using Typescript syntax`
+
+Did not select additions
+
+Selected `npm`
+
+This seems to install dependencies automatically.
+So I change to the directory and check it out:
+
+    cd frontend
+    npm run dev
+
+And content is served on `http://localhost:5173/`
